@@ -1,7 +1,7 @@
 Twitter Button port to Mootools
 ===============================
 
-![Screenshot](https://github.com/DimitarChristoff/mootstrap-scrollspy/raw/master/button.png)
+![Screenshot](https://github.com/DimitarChristoff/mootstrap-button/raw/master/button.png)
 
 This is a port of the Twitter Button to MooTools. It extends it further and makes it more
 flexible
