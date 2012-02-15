@@ -3,8 +3,14 @@ Twitter Button port to Mootools
 
 ![Screenshot](https://github.com/DimitarChristoff/mootstrap-button/raw/master/button.png)
 
-This is a port of the Twitter Button to MooTools. It extends it further and makes it more
-flexible
+This is a port of the Twitter Bootstrap Button to MooTools. It extends it further and makes it more
+flexible.
+
+To those that are unfamiliar with it, it allows you to add blocking behaviour to buttons, making
+them disabled and styling them in any way you like. This allows you to:
+ - give the users feedback that their click/submit action has worked
+ - automatically protects buttons to prevent double or further clicks
+ - enables you to script around it and have events
 
 How to use
 ----------
