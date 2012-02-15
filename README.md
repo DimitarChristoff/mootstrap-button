@@ -36,6 +36,7 @@ no options at all.
                 console.log("we can click again!");
             }
         },
+        text: "click me",
         events: {
             click: function() {
                 this.get("button").toggle();
