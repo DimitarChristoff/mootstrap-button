@@ -9,7 +9,7 @@ authors: Dimitar Christoff
 
 license: MIT-style license.
 
-version: 1.0
+version: 1.1
 
 requires:
   - Core/Event
@@ -74,10 +74,11 @@ provides:
         Implements: [Options, Events],
 
         options: {
-            activeClass: 'active',
-            disabledClass: 'disabled',
-            loadingText: 'loading...',
+            activeClass: "active",
+            disabledClass: "disabled",
+            loadingText: "loading...",
             loadingTime: 0,
+            disableButton: true,
             parentSelector: "[data-toggle='buttons-radio']",
             preferDataProperties: true
         },
@@ -89,6 +90,22 @@ provides:
             // do data-attributes take precedence over options?
             var data = this.element.data();
             data && this.options.preferDataProperties && this.setOptions(data);
+
+            // check if a string from data property == false
+            this.options.disableButton = (this.options.disableButton === 'false') ? false : true;
+
+            // by default, do not apply disable, unless it's a button/input and allowed
+            this.disable = false;
+            switch(this.element.get("tag")) {
+                case 'input':
+                    this.options.prop = 'value';
+                    this.disable = this.options.disableButton;
+                    break;
+                case 'button':
+                    this.disable = this.options.disableButton;
+                default:
+                    this.options.prop = 'html';
+            }
         },
 
         toggle: function() {
@@ -96,35 +113,34 @@ provides:
             var parent = this.element.retrieve("buttonParent") || this.element.getParent(this.options.parentSelector);
 
             // cache parent
-            parent && this.element.store("buttonParent", parent) && parent.getElements('.' + this.options.activeClass).removeClass(this.options.activeClass);
+            parent && this.element.store("buttonParent", parent) && parent.getElements("." + this.options.activeClass).removeClass(this.options.activeClass);
 
             this.element.toggleClass(this.options.activeClass);
 
             // vals of interest. can be input[type=submit/reset] or button so different property.
-            var prop = this.element.retrieve('buttonProp') || this.element.get('tag') == 'input' ? 'value' : 'html',
-                val = this.element.get(prop),
-                self = this,
+            var val = this.element.get(this.options.prop),
                 options = this.options,
                 loading  = this.element.hasClass(this.options.activeClass);
 
             // cache it to avoid further dom access
-            this.element.store('buttonProp', prop);
+            this.element.store("buttonProp");
 
             // store the reset text to old value, if none supplied
             options.resetText || this.setOptions({
-                resetText: val
+                "resetText": val
             });
 
             // change to loading text...
-            this.element.set(prop, loading ? options.loadingText : options.resetText);
+            this.element.set(this.options.prop, loading ? options.loadingText : options.resetText);
 
             // defer so it does not block form submissions that go through...
+            clearTimeout(this.timer);
             (function() {
-                this.element.toggleClass(options.disabledClass).set('disabled', loading);
+                this.element.toggleClass(options.disabledClass);
+                this.disable && this.element.set("disabled", loading);
 
                 // auto reset
-
-                loading && options.loadingTime && (options.loadingTime) > 0 && this.toggle.delay(options.loadingTime, this);
+                loading && options.loadingTime && (options.loadingTime) > 0 && (this.timer = this.toggle.delay(options.loadingTime, this));
             }).delay(0, this);
 
             this.fireEvent('toggle');
