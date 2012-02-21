@@ -62,6 +62,19 @@ no options at all.
         }
     }).get("button").toggle();
 
+    // example on a A link to act as a toggle handler via data-toggle-target="someid"
+    var links = document.getElements("a.toggler");
+    links.each(function(e, el) {
+        el.set("button", {
+            onToggle: function() {
+                document.id(this.options.toggleTarget).toggleClass("displayNone");
+            }
+        });
+        el.addEvent("click", function(e) {
+            e && e.stop && e.stop();
+            this.get("button").toggle();
+        });
+    });
 
 ```
 
