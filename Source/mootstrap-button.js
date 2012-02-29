@@ -24,6 +24,7 @@ provides:
 ...
 */
 (function(scope) {
+    "use strict";
 
     if (!Element.prototype.data) {
         // mimic the data attribute polifill api in jquery for mootools. kind of.
