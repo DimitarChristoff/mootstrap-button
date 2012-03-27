@@ -23,49 +23,46 @@ provides:
 
 ...
 */
-(function(scope) {
-    "use strict";
+!function(scope) {
+    "use strict"
 
     if (!Element.prototype.data) {
-        // mimic the data attribute polifill api in jquery for mootools. kind of.
-        var formatDataProperty = function(prop) {
-            return prop.replace('data-', '').camelCase();
-        };
+        !function() {
+            // mimic the data attribute polyfill api in jquery for mootools. kind of.
 
+            function formatDataProperty(prop) {
+                return prop.replace('data-', '').camelCase()
+            }
 
-        [Document, Element].invoke('implement', {
-            data: function(property, value) {
-                var data = this.retrieve('dataCollection');
-                if (!data) {
-                    data = {};
-                    var hasData = false, attribs = this.attributes || [];
-                    if (!attribs.length)
-                        attribs = [];
+            [Document, Element].invoke('implement', {
 
-                    for (var ii = 0, len = attribs.length; ii < len; ++ii) {
-                        if (attribs[ii].name.indexOf('data-') === 0) {
-                            data[formatDataProperty(attribs[ii].name)] = attribs[ii].value;
-                            hasData = true;
+                data: function(property, force) {
+                    var data = this.retrieve('dataCollection'),
+                        ii = 0,
+                        len,
+                        hasData = false,
+                        attribs
+
+                    if (!data || force === true) {
+                        data = {}
+                        attribs = !Object.propertyIsEnumerable(this, 'attributes') ? this.attributes || [] : []
+                        for (len = attribs.length; ii < len; ++ii) {
+                            if (attribs[ii].name.indexOf('data-') === 0) {
+                                data[formatDataProperty(attribs[ii].name)] = attribs[ii].value
+                                hasData = true
+                            }
                         }
+
+                        if (!hasData)
+                            data = null
+
+                        this.store('dataCollection', data)
                     }
 
-                    if (!hasData)
-                        data = null;
-                    this.store('dataCollection', data);
+                    return property ? data[formatDataProperty(property)] || null : data
                 }
-
-                if (!property)
-                    return data;
-
-                if (value) {
-                    data[property] = value;
-                    this.store('dataCollection', data);
-                }
-
-                return data[formatDataProperty(property)] || null;
-           }
-
-        });
+            })
+        }()
     }
 
 
@@ -170,4 +167,4 @@ provides:
 
     };
 
-})(this);
+}(this)
