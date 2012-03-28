@@ -24,7 +24,6 @@ provides:
 ...
 */
 !function(scope) {
-    "use strict"
 
     if (!Element.prototype.data) {
         !function() {
